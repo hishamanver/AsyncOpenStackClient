@@ -139,12 +139,15 @@ class AuthPassword(AuthModel):
     async def get_token(self):
         async with aiohttp.ClientSession() as session:
             async with session.post(self._auth_endpoint, json=self._auth_payload, headers=self.headers, verify_ssl=self._verify_ssl) as response:
-                result = await response.json()
-                return (
-                    response.headers['X-Subject-Token'],
-                    parser.parse(result['token']['expires_at']).timestamp(),
-                    result['token']['catalog']
-                )
+                try:
+                    result = await response.json()
+                    return (
+                        response.headers['X-Subject-Token'],
+                        parser.parse(result['token']['expires_at']).timestamp(),
+                        result['token']['catalog']
+                    )
+                except Exception as e:
+                    raise Exception(f'{response.headers}, {result}')
 
     def get_endpoint_url(self, endpoint_name, prefered_interface="public"):
         try:
