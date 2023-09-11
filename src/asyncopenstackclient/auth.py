@@ -17,6 +17,7 @@ class AuthModel:
         self._region_name = None
         self._application_credential_id = None
         self._application_credential_secret = None
+        self._verify_ssl = True
 
     async def authenticate(self):
         raise NotImplementedError
@@ -61,6 +62,9 @@ class AuthModel:
     def os_application_credential_secret(self):
         return self._application_credential_secret or os.environ.get('OS_APPLICATION_CREDENTIAL_SECRET')
 
+    @property
+    def os_verify_ssl(self):
+        return self._verify_ssl or os.environ.get(bool('OS_VERIFY_SSL'), True)
 
 class AuthPassword(AuthModel):
 
