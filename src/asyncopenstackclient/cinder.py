@@ -2,8 +2,8 @@ from .client import Client
 
 
 class CinderClient(Client):
-    def __init__(self, session=None, api_url=None):
-        super().__init__('cinder', ['volumes'], session, api_url)
+    def __init__(self, session=None, api_url=None, verify_ssl=True):
+        super().__init__('cinder', ['volumes'], session, api_url, verify_ssl)
 
     async def init_api(self, timeout=60):
         await super().init_api(timeout)

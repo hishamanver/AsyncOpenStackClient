@@ -7,13 +7,15 @@ from urllib.parse import urlparse
 
 class Client:
 
-    def __init__(self, api_name, resources, session=None, api_url=None):
+    def __init__(self, api_name, resources, session=None, api_url=None, verify_ssl=True):
         self.api_name = api_name
         self.resources = resources
         self.session = session
         self._custom_api_url = api_url
         self._catalog_api_url = None
         self._current_api_url = None
+        self._verify_ssl = verify_ssl
+
         self.api = None
         if self.session is None:
             raise AttributeError("provided session object is None, probably auth error?")
@@ -41,7 +43,7 @@ class Client:
 
     async def get_current_version_api_url(self, url):
         async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
+            async with session.get(url, verify_ssl=self._verify_ssl) as response:
                 versions = await response.json()
                 return [version["links"][0]["href"] for version in versions["versions"] if version["status"] == "CURRENT"][0]
 

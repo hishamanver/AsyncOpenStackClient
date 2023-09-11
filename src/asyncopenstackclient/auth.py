@@ -66,7 +66,7 @@ class AuthPassword(AuthModel):
 
     def __init__(self, auth_url=None, username=None, password=None, project_name=None,
                  user_domain_name=None, project_domain_name=None,
-                 application_credential_id=None, application_credential_secret=None):
+                 application_credential_id=None, application_credential_secret=None, verify_ssl=True):
         super().__init__()
         self._auth_url = auth_url
         self._username = username
@@ -76,6 +76,7 @@ class AuthPassword(AuthModel):
         self._project_domain_name = project_domain_name
         self._application_credential_id = application_credential_id
         self._application_credential_secret = application_credential_secret
+        self._verify_ssl = verify_ssl
 
         self._auth_endpoint = self.os_auth_url + '/auth/tokens'
         self.token = None
@@ -133,7 +134,7 @@ class AuthPassword(AuthModel):
 
     async def get_token(self):
         async with aiohttp.ClientSession() as session:
-            async with session.post(self._auth_endpoint, json=self._auth_payload, headers=self.headers) as response:
+            async with session.post(self._auth_endpoint, json=self._auth_payload, headers=self.headers, verify_ssl=self._verify_ssl) as response:
                 result = await response.json()
                 return (
                     response.headers['X-Subject-Token'],
