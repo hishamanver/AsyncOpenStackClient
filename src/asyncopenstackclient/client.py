@@ -29,7 +29,8 @@ class Client:
                      'Content-Type': 'application/json'
                      },
             json_encode_body=True,
-            timeout=timeout
+            timeout=timeout,
+            ssl_verify=self._verify_ssl
         )
         for resource in self.resources:
             self.api.add_resource(resource_name=resource, resource_class=AsyncResource)
